@@ -16,6 +16,11 @@ public class GamePlayState : State
 
     public GameCondition _gameCondition = GameCondition.Play;
 
+    // remove after testing
+    public GameObject generator;
+    public SimpleRandomWalkMapGenerator srwmg;
+    public GameObject _srwmg;
+
     public GamePlayState(GameFSM stateMachine, GameController controller)
     {
         _stateMachine = stateMachine;
@@ -32,7 +37,13 @@ public class GamePlayState : State
         _controller.UnitSpawner.Spawn(_controller.PlayerUnitPrefab, _controller.PlayerUnitSpawnLocation);
 
         Debug.Log("Listen for Player Inputs");
-        Debug.Log("Disaply Player HUD");
+
+        // remove after testing
+        _srwmg = GameObject.Find("SimpleRandomWalkDungeonGenerator");
+        srwmg = _srwmg.GetComponent<SimpleRandomWalkMapGenerator>();
+        srwmg.RunProceduralGeneration();        
+
+        Debug.Log("Display Player HUD");
     }
 
     public override void Exit()
