@@ -11,15 +11,11 @@ public class SimpleRandomWalkMapGenerator : MonoBehaviour
     protected Vector2Int startPosition = Vector2Int.zero;
 
     [SerializeField]
-    private int iterations = 10;
-    [SerializeField]
-    public int walkLength = 10;
-    [SerializeField]
-    public bool startRandomlyEachIteration = true;
+    protected SimpleRandomWalkSO randomWalkParameters;
 
-    public void RunProceduralGeneration()
+    public virtual void RunProceduralGeneration()
     {
-        HashSet<Vector2Int> floorPositions = RunRandomWalk();
+        HashSet<Vector2Int> floorPositions = RunRandomWalk(randomWalkParameters, startPosition);
         foreach (var position in floorPositions)
         {
             // TODO update with visuals for testing then remove
@@ -40,15 +36,30 @@ public class SimpleRandomWalkMapGenerator : MonoBehaviour
         Debug.DrawLine(new Vector3(xStart, 0, yStart + 1), new Vector3(xStart, 0, yStart), Color.red, 2);
     }
 
-    protected HashSet<Vector2Int> RunRandomWalk()
+    // below function may not be used depending on implementation of player/boss spawn points
+    protected HashSet<Vector2Int> RunRandomWalk(SimpleRandomWalkSO parameters)
     {
         var currentPosition = startPosition;
         HashSet<Vector2Int> floorPositions = new HashSet<Vector2Int>();
-        for (int i = 0; i < iterations; i++)
+        for (int i = 0; i < randomWalkParameters.iterations; i++)
         {
-            var path = ProceduralGenerationAlgorithms.SimpleRandomWalk(currentPosition, walkLength);
+            var path = ProceduralGenerationAlgorithms.SimpleRandomWalk(currentPosition, randomWalkParameters.walkLength);
             floorPositions.UnionWith(path);
-            if (startRandomlyEachIteration)
+            if (randomWalkParameters.startRandomlyEachIteration)
+                currentPosition = floorPositions.ElementAt(Random.Range(0, floorPositions.Count));
+        }
+        return floorPositions;
+    }
+
+    protected HashSet<Vector2Int> RunRandomWalk(SimpleRandomWalkSO parameters, Vector2Int position)
+    {
+        var currentPosition = position;
+        HashSet<Vector2Int> floorPositions = new HashSet<Vector2Int>();
+        for (int i = 0; i < randomWalkParameters.iterations; i++)
+        {
+            var path = ProceduralGenerationAlgorithms.SimpleRandomWalk(currentPosition, randomWalkParameters.walkLength);
+            floorPositions.UnionWith(path);
+            if (randomWalkParameters.startRandomlyEachIteration)
                 currentPosition = floorPositions.ElementAt(Random.Range(0, floorPositions.Count));
         }
         return floorPositions;
