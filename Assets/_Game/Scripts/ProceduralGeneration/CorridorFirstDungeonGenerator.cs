@@ -6,13 +6,21 @@ using System.Linq;
 using UnityEditor.Experimental.GraphView;
 using System.ComponentModel;
 
+// REPLACE AFTER TESTING
+using UnityEngine.Tilemaps;
+
 public class CorridorFirstDungeonGenerator : SimpleRandomWalkMapGenerator
 {
     [SerializeField]
     private int corridorLength = 14, corridorCount = 5;
     [SerializeField] [Range(0.1f, 1)]
     private float roomPercent = 0.8f;
+
+    // REPLACE AFTER TESTING
     [SerializeField]
+    private Tilemap floorTileMap;
+    [SerializeField]
+    private TileBase floorTile;
 
     public override void RunProceduralGeneration()
     {
@@ -40,25 +48,30 @@ public class CorridorFirstDungeonGenerator : SimpleRandomWalkMapGenerator
             floorPositions.UnionWith(corridors[i]);
         }
 
+        //REMOVE AFTER TESTING
+        floorTileMap.ClearAllTiles();
+
         foreach (var position in floorPositions)
         {
             // TODO update with visuals for testing then remove
             //Debug.Log(position);
             Vector3 _position = new Vector3(position.x, 0, position.y);
             // Debug.DrawLine(Vector3.zero, _position, Color.red, 300);
-            drawRect(position);
+            //drawRect(position);
+
+            floorTileMap.SetTile((Vector3Int)position, floorTile);
         }
     }
 
     private void drawRect(Vector2 position)
     {
-        float xStart = position.x - 0.5f;
-        float yStart = position.y - 0.5f;
+        float xStart = position.x;
+        float yStart = position.y;
 
         Debug.DrawLine(new Vector3(xStart, 0, yStart), new Vector3(xStart + 1, 0, yStart), Color.red, 2);
-        Debug.DrawLine(new Vector3(xStart + 1, 0, yStart), new Vector3(xStart + 1, 0, yStart + 1), Color.red, 2);
-        Debug.DrawLine(new Vector3(xStart + 1, 0, yStart + 1), new Vector3(xStart, 0, yStart + 1), Color.red, 2);
-        Debug.DrawLine(new Vector3(xStart, 0, yStart + 1), new Vector3(xStart, 0, yStart), Color.red, 2);
+        Debug.DrawLine(new Vector3(xStart + 1, 0, yStart), new Vector3(xStart + 1, 0, yStart - 1), Color.red, 2);
+        Debug.DrawLine(new Vector3(xStart + 1, 0, yStart - 1), new Vector3(xStart, 0, yStart - 1), Color.red, 2);
+        Debug.DrawLine(new Vector3(xStart, 0, yStart - 1), new Vector3(xStart, 0, yStart), Color.red, 2);
     }
 
     private void CreateRoomsAtDeadEnd(List<Vector2Int> deadEnds, HashSet<Vector2Int> roomFloors)

@@ -12,4 +12,11 @@ public class GameController : MonoBehaviour
     public UnitSpawner UnitSpawner { get; private set; }
     [field: SerializeField]
     public SceneChanger SceneChanger { get; private set; }
+    [field: SerializeField]
+    public TouchInput TouchInput { get; private set; }
+
+    public void CloseApplication()
+    {
+        Application.Quit();
+    }
 }

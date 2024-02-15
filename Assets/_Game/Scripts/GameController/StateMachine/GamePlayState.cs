@@ -17,9 +17,9 @@ public class GamePlayState : State
     public GameCondition _gameCondition = GameCondition.Play;
 
     // remove after testing
-    public GameObject generator;
     public SimpleRandomWalkMapGenerator srwmg;
     public GameObject _srwmg;
+    public float _time;
 
     public GamePlayState(GameFSM stateMachine, GameController controller)
     {
@@ -34,14 +34,14 @@ public class GamePlayState : State
         Debug.Log("State: Game Play");
 
         //_controller.SceneChanger.ChangeScene("Level");
-        _controller.UnitSpawner.Spawn(_controller.PlayerUnitPrefab, _controller.PlayerUnitSpawnLocation);
 
         Debug.Log("Listen for Player Inputs");
 
         // remove after testing
         _srwmg = GameObject.Find("SimpleRandomWalkDungeonGenerator");
         srwmg = _srwmg.GetComponent<SimpleRandomWalkMapGenerator>();
-        srwmg.RunProceduralGeneration();        
+        srwmg.RunProceduralGeneration();
+        _controller.UnitSpawner.Spawn(_controller.PlayerUnitPrefab, _controller.PlayerUnitSpawnLocation);
 
         Debug.Log("Display Player HUD");
     }
@@ -59,14 +59,17 @@ public class GamePlayState : State
     public override void Tick()
     {
         base.Tick();
-        
-        if (_gameCondition == GameCondition.Win)
+
+        _time += Time.deltaTime;
+        Debug.Log(_controller.TouchInput.TouchIsHeld);
+
+        if (_controller.TouchInput.TouchIsHeld == true)
         {
-            // go to win screen
+            _stateMachine.ChangeState(_stateMachine.WinState);
         }
-        if (_gameCondition == GameCondition.Lose)
+        if (_time >= 5)
         {
-            // go to lose screen
+            _stateMachine.ChangeState(_stateMachine.LoseState);
         }
     }
 
