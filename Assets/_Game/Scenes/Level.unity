@@ -628,7 +628,7 @@ MonoBehaviour:
     type: 3}
   flower02: {fileID: 6127394599380219870, guid: 22744a120ec0de24f9a6979cc930a144,
     type: 3}
-  treeCoverage: 0.015
+  treeCoverage: 0.0125
   tree01: {fileID: 6459904166107866214, guid: bd442f815f9b12b46aa9832fff97c057, type: 3}
   tree02: {fileID: 1714370024004813721, guid: 5284a026095797641a67fd8c83280546, type: 3}
 --- !u!4 &622221166

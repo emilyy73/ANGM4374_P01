@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField]
     Animator animator;
+    Animator animatorSilhouette;
     [SerializeField]
     private float speed;
     [SerializeField] [Range(1f, 10f)]
@@ -50,7 +50,9 @@ public class PlayerController : MonoBehaviour
         gameControllerScript = gameController.GetComponent<GameController>();
 
         GameObject playerCharacterArt = GameObject.Find("playerCharacter");
+        GameObject playerCharacterSilhouette = GameObject.Find("playerCharacterSilhouette");
         animator = playerCharacterArt.GetComponent<Animator>();
+        animatorSilhouette = playerCharacterSilhouette.GetComponent<Animator>();
 
         foreach (string name in buttonNames)
         {
@@ -79,6 +81,7 @@ public class PlayerController : MonoBehaviour
             {
                 direction = buttonDirections[i];
                 animator.SetInteger("Face", i);
+                animatorSilhouette.SetInteger("Face", i);
                 break;
             }
 
@@ -93,6 +96,7 @@ public class PlayerController : MonoBehaviour
         else
         {
             animator.SetInteger("Face", 4);
+            animatorSilhouette.SetInteger("Face", 4);
             speed = 0;
         }
     }
