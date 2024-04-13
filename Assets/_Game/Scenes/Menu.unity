@@ -672,7 +672,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <PlayerUnitPrefab>k__BackingField: {fileID: 1851084089346255333, guid: 8047d8b900ba83f47b8f455ce8c04e61,
     type: 3}
-  <PlayerUnitSpawnLocation>k__BackingField: {fileID: 8101834004405420357, guid: ea126620778847f4582df3fe10953583,
+  <CameraUnitPrefab>k__BackingField: {fileID: 224640194228768767, guid: c2812689c8bad644eb627eecfd3d879e,
+    type: 3}
+  <BossUnitPrefab>k__BackingField: {fileID: 1851084089346255333, guid: d2ab1f6bb4d970847b0741d84490b621,
+    type: 3}
+  <WitchUnitPrefab>k__BackingField: {fileID: 7461540537122178107, guid: 4cb2adf904362fa48a7d37480e446e0c,
     type: 3}
   <UnitSpawner>k__BackingField: {fileID: 482065497}
   <SceneChanger>k__BackingField: {fileID: 1178206456}

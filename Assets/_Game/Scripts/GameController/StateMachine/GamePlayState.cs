@@ -17,9 +17,11 @@ public class GamePlayState : State
     public GameCondition _gameCondition = GameCondition.Play;
 
     // remove after testing
-    public SimpleRandomWalkMapGenerator srwmg;
-    public GameObject _srwmg;
+    public CorridorFirstDungeonGenerator cfdg;
+    public GameObject _cfdg;
     public float _time;
+    public AutoTiler autoTiler;
+    public GameObject _autoTiler;
 
     public GamePlayState(GameFSM stateMachine, GameController controller)
     {
@@ -37,11 +39,32 @@ public class GamePlayState : State
 
         Debug.Log("Listen for Player Inputs");
 
-        // remove after testing
-        _srwmg = GameObject.Find("SimpleRandomWalkDungeonGenerator");
-        srwmg = _srwmg.GetComponent<SimpleRandomWalkMapGenerator>();
-        srwmg.RunProceduralGeneration();
-        _controller.UnitSpawner.Spawn(_controller.PlayerUnitPrefab, _controller.PlayerUnitSpawnLocation);
+        _cfdg = GameObject.Find("CorridorFirstDungeonGenerator");
+        cfdg = _cfdg.GetComponent<CorridorFirstDungeonGenerator>();
+        cfdg.RunProceduralGeneration();
+
+        _controller.transform.position = new Vector3(cfdg.playerSpawn.x, 0.5f, cfdg.playerSpawn.y);
+        _controller.transform.eulerAngles = new Vector3(_controller.transform.eulerAngles.x,
+            _controller.transform.eulerAngles.y, _controller.transform.eulerAngles.z);
+        _controller.UnitSpawner.Spawn(_controller.PlayerUnitPrefab, _controller.transform);
+        _controller.transform.position = new Vector3(0, 4.5f, -5);
+        _controller.transform.eulerAngles = new Vector3(_controller.transform.eulerAngles.x + 30,
+            _controller.transform.eulerAngles.y, _controller.transform.eulerAngles.z);
+        _controller.UnitSpawner.Spawn(_controller.CameraUnitPrefab, _controller.transform);
+        _controller.transform.position = new Vector3(cfdg.bossSpawn.x, 1.75f, cfdg.bossSpawn.y);
+        _controller.transform.rotation = Quaternion.identity;
+        _controller.UnitSpawner.Spawn(_controller.BossUnitPrefab, _controller.transform);
+        _controller.transform.position = new Vector3(cfdg.witchSpawn01.x, 0.6f, cfdg.witchSpawn01.y);
+        _controller.transform.rotation = Quaternion.identity;
+        _controller.UnitSpawner.Spawn(_controller.WitchUnitPrefab, _controller.transform);
+        _controller.transform.position = new Vector3(cfdg.witchSpawn02.x, 0.6f, cfdg.witchSpawn02.y);
+        _controller.transform.rotation = Quaternion.identity;
+        _controller.UnitSpawner.Spawn(_controller.WitchUnitPrefab, _controller.transform);
+
+
+        _autoTiler = GameObject.Find("AutoTiler");
+        autoTiler = _autoTiler.GetComponent<AutoTiler>();
+        autoTiler.RunAutoTiler();
 
         Debug.Log("Display Player HUD");
     }
@@ -61,16 +84,16 @@ public class GamePlayState : State
         base.Tick();
 
         _time += Time.deltaTime;
-        Debug.Log(_controller.TouchInput.TouchIsHeld);
-
+        /*
         if (_controller.TouchInput.TouchIsHeld == true)
         {
             _stateMachine.ChangeState(_stateMachine.WinState);
         }
-        if (_time >= 5)
+        if (_time >= 30)
         {
             _stateMachine.ChangeState(_stateMachine.LoseState);
         }
+        */
     }
 
 

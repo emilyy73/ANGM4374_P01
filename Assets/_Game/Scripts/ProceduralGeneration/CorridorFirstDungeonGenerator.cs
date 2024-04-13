@@ -5,9 +5,7 @@ using UnityEngine;
 using System.Linq;
 using UnityEditor.Experimental.GraphView;
 using System.ComponentModel;
-
-// REPLACE AFTER TESTING
-using UnityEngine.Tilemaps;
+using Random = UnityEngine.Random;
 
 public class CorridorFirstDungeonGenerator : SimpleRandomWalkMapGenerator
 {
@@ -15,12 +13,25 @@ public class CorridorFirstDungeonGenerator : SimpleRandomWalkMapGenerator
     private int corridorLength = 14, corridorCount = 5;
     [SerializeField] [Range(0.1f, 1)]
     private float roomPercent = 0.8f;
+    [SerializeField] [Range(0.01f, 0.75f)]
+    private float corridorRemovalFactor = 0.1f;
 
-    // REPLACE AFTER TESTING
-    [SerializeField]
-    private Tilemap floorTileMap;
-    [SerializeField]
-    private TileBase floorTile;
+    //change these to private and use mutators/accesors?
+    // ADD WITCH SPAWN
+    [HideInInspector]
+    public Vector2Int playerSpawn;
+    [HideInInspector]
+    public Vector2Int bossSpawn;
+    [HideInInspector]
+    public Vector2Int witchSpawn01;
+    [HideInInspector]
+    public Vector2Int witchSpawn02;
+
+    [HideInInspector]
+    public HashSet<Vector2Int> floorPositions { get; private set; }
+
+    [HideInInspector]
+    public HashSet<Vector2Int> corridorPositions { get; private set; }
 
     public override void RunProceduralGeneration()
     {
@@ -29,7 +40,7 @@ public class CorridorFirstDungeonGenerator : SimpleRandomWalkMapGenerator
 
     private void CorridorFirstGeneration()
     {
-        HashSet<Vector2Int> floorPositions = new HashSet<Vector2Int>();
+        floorPositions = new HashSet<Vector2Int>();
         HashSet<Vector2Int> potentialRoomPositions = new HashSet<Vector2Int>();
 
         List<List<Vector2Int>> corridors = CreateCorridors(floorPositions, potentialRoomPositions);
@@ -49,29 +60,24 @@ public class CorridorFirstDungeonGenerator : SimpleRandomWalkMapGenerator
         }
 
         //REMOVE AFTER TESTING
-        floorTileMap.ClearAllTiles();
+        /*floorTileMap.ClearAllTiles();
 
         foreach (var position in floorPositions)
         {
             // TODO update with visuals for testing then remove
             //Debug.Log(position);
-            Vector3 _position = new Vector3(position.x, 0, position.y);
+            Vector3 _position = new Vector3(position.x, -0.5f, position.y);
             // Debug.DrawLine(Vector3.zero, _position, Color.red, 300);
             //drawRect(position);
 
             floorTileMap.SetTile((Vector3Int)position, floorTile);
-        }
-    }
+        }*/
 
-    private void drawRect(Vector2 position)
-    {
-        float xStart = position.x;
-        float yStart = position.y;
+        List<Vector2Int> checkRoomPos = roomPositions.OrderBy(x => Guid.NewGuid()).Take(roomPositions.Count).ToList();
 
-        Debug.DrawLine(new Vector3(xStart, 0, yStart), new Vector3(xStart + 1, 0, yStart), Color.red, 2);
-        Debug.DrawLine(new Vector3(xStart + 1, 0, yStart), new Vector3(xStart + 1, 0, yStart - 1), Color.red, 2);
-        Debug.DrawLine(new Vector3(xStart + 1, 0, yStart - 1), new Vector3(xStart, 0, yStart - 1), Color.red, 2);
-        Debug.DrawLine(new Vector3(xStart, 0, yStart - 1), new Vector3(xStart, 0, yStart), Color.red, 2);
+        corridorPositions = RemoveRandomCorridorTiles(corridors);
+
+        FindSpawns(corridors, playerSpawn);
     }
 
     private void CreateRoomsAtDeadEnd(List<Vector2Int> deadEnds, HashSet<Vector2Int> roomFloors)
@@ -149,5 +155,47 @@ public class CorridorFirstDungeonGenerator : SimpleRandomWalkMapGenerator
             }
         }
         return newCorridor;
+    }
+
+    private void FindSpawns(List<List<Vector2Int>> checkRoomPosLL, Vector2Int playerSpawn)
+    {
+        
+        List<Vector2Int> checkRoomPos = ListListToList(checkRoomPosLL);
+        List<Vector2Int> orderedRooms = checkRoomPos.OrderBy(point => Mathf.Sqrt(Mathf.Pow(point.x - playerSpawn.x, 2) + Mathf.Pow(point.y -
+            playerSpawn.y, 2))).ToList();
+
+        playerSpawn = orderedRooms[0];
+        witchSpawn01 = orderedRooms[orderedRooms.Count / 3];
+        witchSpawn02 = orderedRooms[orderedRooms.Count * 2 / 3];
+        bossSpawn = orderedRooms[orderedRooms.Count - 1];
+    }
+
+    private List<Vector2Int> ListListToList(List<List<Vector2Int>> listList)
+    {
+        List<Vector2Int> flattened = new List<Vector2Int>();
+
+        foreach (List<Vector2Int> toFlatten in listList)
+        {
+            foreach (Vector2Int position in toFlatten)
+            {
+                flattened.Add(position);
+            }
+        }
+
+        return flattened;
+    }
+
+    private HashSet<Vector2Int> RemoveRandomCorridorTiles(List<List<Vector2Int>> corridorListList)
+    {
+        List<Vector2Int> corridorList = ListListToList(corridorListList);
+        int totTileCount = corridorList.Count();
+        int tilesToChange = (int)Mathf.Round(totTileCount * corridorRemovalFactor);
+
+        for (int i = 0; i < tilesToChange; i++)
+        {
+            corridorList.Remove(corridorList.ElementAt(Random.Range(0, corridorList.Count() - 1)));
+        }
+
+        return new HashSet<Vector2Int>(corridorList);
     }
 }
