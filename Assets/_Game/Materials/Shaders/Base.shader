@@ -1,4 +1,4 @@
-Shader "Unlit/TreeUnlit"
+Shader "Unlit/Base"
 {
     Properties
     {
@@ -6,19 +6,16 @@ Shader "Unlit/TreeUnlit"
     }
     SubShader
     {
-        Tags {  "RenderType"="Transparent" 
-                "Render"="Transparent"      }
+        Tags { "RenderType"="Opaque" }
         LOD 100
 
         Pass
         {
-            ZWrite On
-            Cull Off
-            Blend SrcAlpha OneMinusSrcAlpha
-
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            // make fog work
+            #pragma multi_compile_fog
 
             #include "UnityCG.cginc"
 
@@ -31,6 +28,7 @@ Shader "Unlit/TreeUnlit"
             struct v2f
             {
                 float2 uv : TEXCOORD0;
+                UNITY_FOG_COORDS(1)
                 float4 vertex : SV_POSITION;
             };
 
@@ -42,6 +40,7 @@ Shader "Unlit/TreeUnlit"
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+                UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
 
@@ -49,10 +48,8 @@ Shader "Unlit/TreeUnlit"
             {
                 // sample the texture
                 fixed4 col = tex2D(_MainTex, i.uv);
-                
-                if (col.w < 0.1)
-                    clip(-1);
-
+                // apply fog
+                UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;
             }
             ENDCG

@@ -2,40 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class EnemyFSM : MonoBehaviour
+public class EnemyFSM : StateMachineMB
 {
-    private enum State
+    public WanderState wanderState;
+    public ChaseState chaseState;
+    public AttackState attackState;
+    public Stats stats;
+
+    void Awake ()
     {
-        Wander,
-        Chase,
-        Attack
+        wanderState = new WanderState(stats);
+        chaseState = new ChaseState(stats);
+        attackState = new AttackState(stats);
     }
 
-    private State currentState;
-
-    void Update()
-    {
-        switch(currentState)
-        {
-            case State.Wander:
-            {
-                UpdateWander();
-                break;
-            }
-            case State.Chase:
-            {
-                UpdateChase();
-                break;
-            }
-            case State.Attack:
-            {
-                UpdateAttack();
-                break;
-            }
-        }
-    }
-
-    public abstract void UpdateWander();
-    public abstract void UpdateChase();
-    public abstract void UpdateAttack();
 }
