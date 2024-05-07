@@ -15,32 +15,33 @@ public class EnemyBase : EnemyFSM
 
     private Vector3 startingPosition;
 
-    private void Start()
+    void Start()
     {
         startingPosition = this.transform.position;
+        this.transition(State.Wander);
     }
 
-    public override void UpdateAttack()
+    override void UpdateAttack()
     {
         throw new System.NotImplementedException();
     }
 
-    public override void UpdateChase()
+    override void UpdateChase()
     {
         throw new System.NotImplementedException();
     }
 
-    public override void UpdateWander()
+    override void UpdateWander()
     {
         throw new System.NotImplementedException();
     }
 
-    private Vector3 GetRoamingPosition()
+    Vector3 GetRoamingPosition()
     {
         return startingPosition + GetRandomDirec() * Random.Range(10f, 50f);
     }
 
-    private static Vector3 GetRandomDirec()
+    static Vector3 GetRandomDirec()
     {
         return new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized;
     }
