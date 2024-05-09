@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2460857840846123542}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -126,7 +126,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2460857842626097125}
   - component: {fileID: 2460857842626096922}
-  - component: {fileID: 2460857842626096923}
+  - component: {fileID: 3222623516497782156}
+  - component: {fileID: 1465584754507986312}
   m_Layer: 0
   m_Name: EnemyMeleeUnit
   m_TagString: Untagged
@@ -163,7 +164,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.1864967, y: 0.8444977, z: 0.48950958}
   m_Center: {x: -0.014474869, y: -0.17181015, z: -0.09831619}
---- !u!114 &2460857842626096923
+--- !u!114 &3222623516497782156
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -172,9 +173,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 2460857842626096920}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 421472663513fe24ead2c0a2be9f8189, type: 3}
+  m_Script: {fileID: 11500000, guid: eacffdd888d03fc419d8c365435539b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1465584754507986312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2460857842626096920}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83977b9db5bd93845904b785ca9a60a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   detectionRadius: 10
+  attackRadius: 2
   moveSpeed: 2
-  wanderRadius: 0
+  attackRate: 1
+  dashForce: 10

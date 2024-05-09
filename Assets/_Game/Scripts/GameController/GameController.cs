@@ -12,7 +12,8 @@ public class GameController : MonoBehaviour
     public Unit BossUnitPrefab { get; private set; }
     [field: SerializeField]
     public Unit WitchUnitPrefab { get; private set; }
-
+    [field: SerializeField]
+    public List<Unit> EnemyUnitsPrefabs { get; private set; }
     public Transform PlayerUnitSpawnLocation { get; private set; }
     [field: SerializeField]
     public UnitSpawner UnitSpawner { get; private set; }

@@ -678,6 +678,9 @@ MonoBehaviour:
     type: 3}
   <WitchUnitPrefab>k__BackingField: {fileID: 7461540537122178107, guid: 4cb2adf904362fa48a7d37480e446e0c,
     type: 3}
+  <EnemyUnitsPrefabs>k__BackingField:
+  - {fileID: 3222623516497782156, guid: dc976f0ce1789014eb0f4a0dc2893b25, type: 3}
+  - {fileID: 5408298054473279582, guid: 6281ede25aae72641a59ede1b038f706, type: 3}
   <UnitSpawner>k__BackingField: {fileID: 482065497}
   <SceneChanger>k__BackingField: {fileID: 1178206456}
   <TouchInput>k__BackingField: {fileID: 250431750}

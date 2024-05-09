@@ -2,18 +2,45 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyFSM : StateMachineMB
+public abstract class EnemyFSM : MonoBehaviour
 {
-    public WanderState wanderState;
-    public ChaseState chaseState;
-    public AttackState attackState;
-    public Stats stats;
-
-    void Awake ()
+    public enum EnemyState
     {
-        wanderState = new WanderState(stats);
-        chaseState = new ChaseState(stats);
-        attackState = new AttackState(stats);
+        Wander,
+        Chase,
+        Attack,
+        Dead
     }
 
+    protected EnemyState currentState;
+    protected EnemyState previousState;
+
+    protected void transition(EnemyState nextState)
+    {
+        if (currentState != null)
+        {
+            previousState = currentState;
+            currentState = nextState;
+            OnExitState(previousState);
+        }
+        OnEnterState(currentState);
+    }
+
+    protected void UpdateCurrentState() {
+
+    }
+
+    protected virtual void OnEnterState(EnemyState state) { }
+    protected virtual void OnExitState(EnemyState state) { }
+    protected virtual void OnUpdateState(EnemyState state) { }
+
+    protected virtual void Start()
+    {
+        currentState = EnemyState.Wander;
+    }
+
+    void Update()
+    {
+        OnUpdateState(currentState);
+    }
 }

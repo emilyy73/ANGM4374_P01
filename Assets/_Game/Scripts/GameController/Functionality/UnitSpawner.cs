@@ -12,4 +12,14 @@ public class UnitSpawner : MonoBehaviour
         // TODO do setup here if needed, spawn effects, etc
         return newUnit;
     }
+
+    public Unit SpawnEnemy(Unit unitPrefab, Transform location, Collider spawnArea)
+    {
+        // spawn and hold on to the component type
+        Unit newUnit = Instantiate(unitPrefab, location.position, location.rotation);
+        newUnit.GetComponent<EnemyBase>().SetWanderArea(spawnArea);
+
+        // TODO do setup here if needed, spawn effects, etc
+        return newUnit;
+    }
 }

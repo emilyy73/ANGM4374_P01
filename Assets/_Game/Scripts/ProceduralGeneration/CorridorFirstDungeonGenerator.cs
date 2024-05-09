@@ -27,6 +27,13 @@ public class CorridorFirstDungeonGenerator : SimpleRandomWalkMapGenerator
     [HideInInspector]
     public Vector2Int witchSpawn02;
 
+    [SerializeField]
+    public Collider BaseSpawnArea;
+    [HideInInspector]
+    public List<Collider> enemySpawnAreas;
+    [SerializeField]
+    private int enemySpawnNum = 3;
+
     [HideInInspector]
     public HashSet<Vector2Int> floorPositions { get; private set; }
 
@@ -76,9 +83,11 @@ public class CorridorFirstDungeonGenerator : SimpleRandomWalkMapGenerator
         List<Vector2Int> checkRoomPos = roomPositions.OrderBy(x => Guid.NewGuid()).Take(roomPositions.Count).ToList();
 
         corridorPositions = RemoveRandomCorridorTiles(corridors);
-
+        FindEnemySpawnAreas(roomPositions);
         FindSpawns(corridors, playerSpawn);
     }
+
+
 
     private void CreateRoomsAtDeadEnd(List<Vector2Int> deadEnds, HashSet<Vector2Int> roomFloors)
     {
@@ -155,6 +164,49 @@ public class CorridorFirstDungeonGenerator : SimpleRandomWalkMapGenerator
             }
         }
         return newCorridor;
+    }
+
+    private Vector2Int GetRandomPoint(HashSet<Vector2Int> set) {
+        return set.ElementAt(Random.Range(0, set.Count - 1));
+    }
+
+    private void FindEnemySpawnAreas(HashSet<Vector2Int> roomPositions)
+    {
+        enemySpawnAreas = new List<Collider>();
+        for (int i = 0; i < enemySpawnNum; i++)
+        {
+            Vector2Int spawnPosition = GetRandomPoint(roomPositions);
+            Collider spawnArea = Instantiate(BaseSpawnArea, new Vector3(spawnPosition.x, 0.5f, spawnPosition.y), Quaternion.identity);
+            if (HasAllPoints(spawnArea, roomPositions))
+            {
+                enemySpawnAreas.Add(spawnArea);
+            }
+            else
+            {
+                Destroy(spawnArea.gameObject);
+                i--;
+            }
+        }
+    }
+
+    private bool HasAllPoints(Collider area, HashSet<Vector2Int> roomPositions)
+    {
+        Bounds bounds = area.bounds;
+        int xMin = (int)bounds.min.x;
+        int xMax = (int)bounds.max.x;
+        int yMin = (int)bounds.min.y;
+        int yMax = (int)bounds.max.y;
+        for (int x = xMin; x < xMax; x++)
+        {
+            for (int y = yMin; y < yMax; y++)
+            {
+                if (!roomPositions.Contains(new Vector2Int(x, y)))
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private void FindSpawns(List<List<Vector2Int>> checkRoomPosLL, Vector2Int playerSpawn)

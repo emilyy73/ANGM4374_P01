@@ -23,6 +23,9 @@ public class GamePlayState : State
     public AutoTiler autoTiler;
     public GameObject _autoTiler;
 
+    [field: SerializeField]
+    private int enemiesPerSpawnArea = 3;
+
     public GamePlayState(GameFSM stateMachine, GameController controller)
     {
         _stateMachine = stateMachine;
@@ -61,12 +64,34 @@ public class GamePlayState : State
         _controller.transform.rotation = Quaternion.identity;
         _controller.UnitSpawner.Spawn(_controller.WitchUnitPrefab, _controller.transform);
 
+        SpawnEnemiesInSpawnAreas();
 
         _autoTiler = GameObject.Find("AutoTiler");
         autoTiler = _autoTiler.GetComponent<AutoTiler>();
         autoTiler.RunAutoTiler();
 
         Debug.Log("Display Player HUD");
+    }
+
+    private Unit ChooseRandomEnemy()
+    {
+        int randomIndex = Random.Range(0, _controller.EnemyUnitsPrefabs.Count);
+        return _controller.EnemyUnitsPrefabs[randomIndex];
+    }
+
+    private void SpawnEnemiesInSpawnAreas()
+    {
+        foreach (Collider spawnArea in cfdg.enemySpawnAreas)
+        {
+            for (int i = 0; i < enemiesPerSpawnArea; i++)
+            {
+                Vector3 spawnPosition = new Vector3(Random.Range(spawnArea.bounds.min.x, spawnArea.bounds.max.x),
+                    0.5f, Random.Range(spawnArea.bounds.min.z, spawnArea.bounds.max.z));
+                _controller.transform.position = spawnPosition;
+                _controller.UnitSpawner.SpawnEnemy(ChooseRandomEnemy(), _controller.transform, spawnArea);
+
+            }
+        }
     }
 
     public override void Exit()
